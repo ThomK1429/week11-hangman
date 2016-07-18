@@ -4,25 +4,30 @@ var inquirer = require('inquirer');
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Define variables and populate where necessary
-//var letter      = "";
-var letterEntered      = "";
-var lettersUsed = [];				   // placeholder for letters used, stored in  a-z order
+//var letter       = "";
+var letterEntered  = "";
+var lettersUsed    = [];			   // placeholder for letters used, stored in  a-z order
 
-var randomWord  = randWordFunc();      // generate a random word to guess
-var randWordLen = randomWord.length;
+var randomWord     = randWordFunc();   // generate a random word to guess
+var randWordSave   = []; 
+var randWordSave   = Array.from(randomWord);
+var randWordLen    = randomWord.length;
 console.log("randomWord=" + randomWord + "\n");
 //console.log("randomWord=" + randomWord + " randWordLen=" + randWordLen + "\n");
 
-var turnCtr     = 14;                   // you are allowed 14 tries to guess the word
-var typeIt      = " ";
-var typeItMsg   = "Type it here ==> ";
-var typeItULose = "Game Over...You Lose!!!";
-var typeItUWin  = "Game Over...You Win!!!";
-var typeItDup   = "The letter entered has already been selected.  Try again.   ==> ";
+var winCtr         = 0;
+var winloss        = 0;
+
+var turnCtr        = 14;               // you are allowed 14 tries to guess the word
+var typeIt         = " ";
+var typeItMsg      = "Type it here ==> ";
+var typeItULose    = " Game Over.  You Lose!!!";
+var typeItUWin     = " Game Over.  You Win!!!";
+var typeItDup      = "The letter entered has already been selected.  Try again.   ==> ";
 var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
 
-var wordToGuess = [];                   // the is the word to guess
-var wordToDisplay = [];                 // display the word with the letters as guessed
+var wordToGuess    = [];               // the is the word to guess
+var wordToDisplay  = [];               // display the word with the letters as guessed
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -115,9 +120,12 @@ inquirer.prompt([{
           //typeIt = typeItMsg;
           displayHdr();
           if(randWordLen == 0 && turnCtr >= 0){
-            console.log("randWordLen3=" + randWordLen);
-            typeIt = typeItUWin;   // End Game, You Win msg       
-            console.log(typeItUwin);
+            //console.log("randWordLen3=" + randWordLen);
+            //typeIt = typeItUWin;   // End Game, You Win msg       
+            console.log('                                Congrats!!! '); 
+            console.log('                   You guessed the mystery word ' + '"' + randWordSave.join("") + '".');
+            console.log('                         ' + typeItUWin );
+            console.log("\n\n");
             return;
 
           }
@@ -129,8 +137,17 @@ inquirer.prompt([{
           //console.log("  The letter " +  x.letter.toLowerCase() + "has already been selected.  Try again. ")
     }
 
-        
-            console.log("wordToGuess=" + wordToGuess);
+
+        if(turnCtr <= 0){
+            console.log('                    Sorry...there are no more turns left. ');
+            console.log('                     The mystery word was ' + '"' +  randWordSave.join("") + '". ');
+            console.log('                         ' + typeItULose);
+            console.log("\n\n");
+            return;
+        }
+
+            console.log("randWordSave=" + randWordSave);
+
 
     // recursion, do it again
     promptIt();                                 
