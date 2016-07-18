@@ -225,7 +225,7 @@ inquirer.prompt([{
 
     function clearTheScreen() { 
        // give the appearance of screen driven app rather than cmd line app
-       //process.stdout.write('\033c'); // clear the screen 
+       process.stdout.write('\033c'); // clear the screen 
     }
     
 // -----------------------------------------------------------------
