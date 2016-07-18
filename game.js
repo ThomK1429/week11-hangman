@@ -1,30 +1,23 @@
-// game.js
+// game.js - select a random word for the player
+// this js will be called from main.js
 
-var RandWordGen = function() {
-
- 
-console.log("game.js");
+var RandWordGen = function(){
 
 // a list of words, which will be selected at random, for the player of the game to guess
-	var listOfWords = [ 'zeroth', 'first','second','third', 'fourth', 'fifth', 
+	this.listOfWords = [ 'zeroth', 'first','second','third', 'fourth', 'fifth', 
 						'sixth', 'seventh','eighth','nineth', 'tenth', 'meeeeow', 
 						'eleventh', 'twelfth','thirteenth','fourteenth', 'fifteenth', 'baaaark'];
 
-	var randNum = -1;					// a random number generated used for random selection from
+	this.randNum = -1;					// a random number generated used for random selection from
 										//    the listOfWords array
-	var randomWord = "abc";		
+	this.randomWord = "abc";		
 
-	randNum = Math.floor(Math.random() * (listOfWords.length + 1));
-	randomWord = listOfWords[randNum];
+	this.randNum = Math.floor(Math.random() * (this.listOfWords.length + 1));
+	this.randomWord = this.listOfWords[this.randNum];
 	//randomWord = listOfWords[1];			// test purposes - test a specific word
 
-	console.log("game.js - randomWord generated = " + randomWord);
-
-	return randomWord;
-
+	//console.log("game.js -  randomWord generated = " + this.randomWord);
+	return this.randomWord;
 }
-
-//RandWordGen();
-
 
 module.exports = RandWordGen;

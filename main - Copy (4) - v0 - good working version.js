@@ -26,9 +26,6 @@
 //DEPENDANCY FOR inquirer NPM PACKAGE
 var inquirer = require('inquirer');
 
-var RandWordGen = require('./game.js');
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Define variables and populate where necessary
@@ -37,11 +34,7 @@ var hintWord       = "";               // placeholder to display mystery word if
 var letterEntered  = "";
 var lettersUsed    = [];			   // placeholder for letters used, stored in  a-z order
 
-var xyz    = new RandWordGen();   // generate a random word to guess
-var randomWord = xyz.randomWord;
-
-console.log("main.js - randomWord=" + JSON.stringify(randomWord));
-//var randomWord     = randWordFunc();   // generate a random word to guess
+var randomWord     = randWordFunc();   // generate a random word to guess
 var randWordSave   = []; 
 var randWordSave   = Array.from(randomWord);
 var randWordLen    = randomWord.length;
@@ -68,12 +61,12 @@ initArray(lettersUsed, 26);            // an array to store the letters used in 
 //console.log("lettersUsed=" + dispTheArray(lettersUsed)); // w/ " " between each element
 //console.log("lettersUsed=" + strTheArray(lettersUsed));  // w/ "|" between each element
 
- 
+
 wordToGuess = randomWord.split('');    // convert string into an array of chars
-//console.log("wordToGuess0=" + wordToGuess + " " );
+console.log("wordToGuess0=" + wordToGuess + " " );
 
 initArray(wordToDisplay, wordToGuess.length);            // display the word with the letters as guessed
-//console.log("wordToDisplay=" + wordToDisplay);
+console.log("wordToDisplay=" + wordToDisplay);
 
 displayHdr();
 //console.log("                             You entered: " + "\n"); 
@@ -225,7 +218,7 @@ inquirer.prompt([{
 
     function clearTheScreen() { 
        // give the appearance of screen driven app rather than cmd line app
-       //process.stdout.write('\033c'); // clear the screen 
+       process.stdout.write('\033c'); // clear the screen 
     }
     
 // -----------------------------------------------------------------
