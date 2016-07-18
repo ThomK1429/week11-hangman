@@ -4,7 +4,7 @@ var inquirer = require('inquirer');
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Define variables and populate where necessary
-var letter      = "";
+//var letter      = "";
 var letterEntered      = "";
 var lettersUsed = [];				   // placeholder for letters used, stored in  a-z order
 
@@ -14,7 +14,15 @@ console.log("randomWord=" + randomWord + "\n");
 //console.log("randomWord=" + randomWord + " randWordLen=" + randWordLen + "\n");
 
 var turnCtr     = 14;                   // you are allowed 14 tries to guess the word
-var wordToGuess = [];
+var typeIt      = " ";
+var typeItMsg   = "Type it here ==> ";
+var typeItULose = "Game Over...You Lose!!!";
+var typeItUWin  = "Game Over...You Win!!!";
+var typeItDup   = "The letter entered has already been selected.  Try again.   ==> ";
+var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
+
+var wordToGuess = [];                   // the is the word to guess
+var wordToDisplay = [];                 // display the word with the letters as guessed
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -25,10 +33,14 @@ initArray(lettersUsed, 26);            // an array to store the letters used in 
 wordToGuess = randomWord.split('');    // convert string into an array of chars
 console.log("wordToGuess0=" + wordToGuess + " " );
 
+initArray(wordToDisplay, wordToGuess.length);            // display the word with the letters as guessed
+console.log("wordToDisplay=" + wordToDisplay);
+
 displayHdr();
 //console.log("                             You entered: " + "\n"); 
 //console.log("                          Guess the word: "       ); 
 
+typeIt = typeItMsg;
 promptIt();							   // 1st prompt for a letter guess and process
 
 // -----------------------------------------------------------------------
@@ -39,7 +51,8 @@ function promptIt(){
 //STORED WITHIN THE VARIABLE answers INSIDE OF THE .then STATEMENT.
 inquirer.prompt([{
     name: "letter", 
-    message: "Type it here ==> "
+    message: typeIt
+    // message: "Type it here ==> "
 }]).then(function(x) {
 
     //console.log("  You have selected letter ==> " + x.letter +  " " + (x.letter.toLowerCase().charCodeAt() - 97) + "\n");
@@ -47,7 +60,7 @@ inquirer.prompt([{
 
     //lettersUsed[(x.letter.toLowerCase().charCodeAt() - 96)] = x.letter;
     //console.log("lettersUsed2=" ); 
-    if(x.letter == '9') return;     // allow the player to end the game
+    if(x.letter == '9' || typeIt == typeItUWin) return;     // allow the player to end the game
     
     turnCtr--;
 
@@ -60,33 +73,64 @@ inquirer.prompt([{
           // --------------------------------------
                     var i = randomWord.search(x.letter);
                  //console.log(" i=" + i);
+                 if(i == -1){
+                    // letter not found in word, update prompt msg
+                    typeIt = typeItNotFnd;
+                 } else {
+                    // letter was found in word, use std prompt msg
+                    typeIt = typeItMsg;
+                 }
+
 
                     while (i != -1) {   // if i=-1, then letter is not found in string
             //guessTheWord[i] = x.letter;
            //wordToGuessLen--;
 
             wordToGuess[i] = "_";
+            wordToDisplay[i] = x.letter;
+
+            randWordLen--;              // decrement for each letter found. 
+                                        // when length is zero, word has been guessed
 
             randomWord = wordToGuess.join("");
             //wordToGuess = [...str];
 
             i = randomWord.search(x.letter);
             };
+
+ 
+            console.log("randWordLen1=" + randWordLen);
+            //check to see if you won?
+            if(randWordLen ==0){
+                console.log("randWordLen2=" + randWordLen);
+            }
+
+
             //console.log("wordToGuess after =" + wordToGuess );
           
             
                 // --------------------------------------
             
           letterEntered = x.letter;
+          //typeIt = typeItMsg;
           displayHdr();
+          if(randWordLen == 0 && turnCtr >= 0){
+            console.log("randWordLen3=" + randWordLen);
+            typeIt = typeItUWin;   // End Game, You Win msg       
+            console.log(typeItUwin);
+            return;
+
+          }
 
     } else {
-          console.log("  The letter " +  x.letter.toLowerCase() + "has already been selected.  Try again. ")
+          typeIt = typeItDup;
+          displayHdr();
+
+          //console.log("  The letter " +  x.letter.toLowerCase() + "has already been selected.  Try again. ")
     }
 
-
-        //console.log("  lettersUsed=" + strTheArray(lettersUsed) + "\n");  // w/ "|" between each element
-
+        
+            console.log("wordToGuess=" + wordToGuess);
 
     // recursion, do it again
     promptIt();                                 
@@ -129,8 +173,8 @@ console.log("          *                                                       *
 console.log("          *********************************************************");
 console.log("\n");
 console.log("        --- Guess the word by selecting a letter on the keyboard ---");
-
-console.log("                              " + wordToGuess );
+ 
+console.log("                              " + wordToDisplay.join(" ") );
 console.log("\n"); 
 
 console.log("                               You entered: " );
