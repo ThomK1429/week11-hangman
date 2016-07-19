@@ -1,13 +1,13 @@
 // letter.js
 
-var WordToDisplay = function(randomWord, randWordLen, xLetterSave, wordToGuess, wordToDisplay, typeIt){
+var WordToDisplay = function(randomWord, randWordLen, xLetter, wordToGuess, wordToDisplay, typeIt){
 
-this.randomWord = randomWord;
+this.randomWord  = randomWord;
 this.randWordLen = randWordLen;
-this.xLetterSave = xLetterSave;
+this.xLetter     = xLetter;
 this.wordToGuess = wordToGuess;
 this.wordToDisplay = wordToDisplay;
-this.typeIt = typeIt;
+this.typeIt      = typeIt;
 
 
 //console.log("wtd - randomWord=" + this.randomWord);
@@ -19,7 +19,7 @@ var typeItMsg      = "Type it here ==> ";
 var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
 
 // search to see if your input letter is contained in the mystery word
-var i = this.randomWord.search(this.xLetterSave);  // i will = -1 if not found
+var i = this.randomWord.search(this.xLetter);  // i will = -1 if not found
  
   // display in the input letter prompt area - letter found or not found
   if(i == -1){
@@ -30,19 +30,19 @@ var i = this.randomWord.search(this.xLetterSave);  // i will = -1 if not found
 
   while (i != -1) {                 // if i=-1, then letter is not found in string
   	this.wordToGuess[i]   = "_";    // blank out the letter
-    this.wordToDisplay[i] = this.xLetterSave;  // update the screen display of letter found
+    this.wordToDisplay[i] = this.xLetter;  // update the screen display of letter found
     this.randWordLen--;             // decrement for each letter found. 
                                     //    when length is zero, word has been guessed
     this.randomWord = this.wordToGuess.join("");
 
-    i = this.randomWord.search(this.xLetterSave);  // search again & go to top of loop
+    i = this.randomWord.search(this.xLetter);  // search again & go to top of loop
   };
 
   //console.log("letter.js - this.randWordLen a=" + this.randWordLen);  
   //console.log("letter.js - this.typeIt=" + this.typeIt);
   //
   // return the input fields updated back to the caller
-  return this.randomWord, this.randWordLen, this.xLetterSave, this.wordToGuess, this.wordToDisplay, this.typeIt;
+  return this.randomWord, this.randWordLen, this.xLetter, this.wordToGuess, this.wordToDisplay, this.typeIt;
 }
 
 module.exports = WordToDisplay;

@@ -24,25 +24,25 @@
 
 
 //DEPENDANCY FOR inquirer NPM PACKAGE
-var inquirer = require('inquirer');
+var inquirer      = require('inquirer');         // prompt processing api
 
-var RandWordGen = require('./game.js');
-var WordToDisplay = require('./letter.js');
+var RandWordGen   = require('./game.js');        // select a random word
+var WordToDisplay = require('./letter.js');      // update word display as guessed
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Define variables and populate where necessary
-var hintWord       = "";               // placeholder to display mystery word if set
+var hintWord       = "";         // placeholder to display mystery word if set
 
 var letterEntered  = "";
 var lettersUsed    = [];			   // placeholder for letters used, stored in  a-z order
 
-var xyz    = new RandWordGen();   // generate a random word to guess
-var randomWord = xyz.randWord;
+var rwg            = new RandWordGen();  // generate a random word to guess  // game.js
+var randomWord     = rwg.randWord;
 
-console.log("main.js - randomWord=" + JSON.stringify(randomWord));
-//var randomWord     = randWordFunc();   // generate a random word to guess
+//console.log("main.js - randomWord=" + JSON.stringify(randomWord));
+//var randomWord   = randWordFunc();   // generate a random word to guess function
 var randWordSave   = []; 
 var randWordSave   = Array.from(randomWord);
 var randWordLen    = randomWord.length;
@@ -53,14 +53,15 @@ var winCtr         = 0;
 var winloss        = 0;
 
 var turnCtr        = 14;               // you are allowed 14 tries to guess the word
-var typeIt         = " ";
+
+var typeIt         = " ";              // status msgs are loaded here
+var typeItDup      = "The letter entered has already been selected.  Try again.   ==> ";
 var typeItMsg      = "Type it here ==> ";
 var typeItULose    = " Game Over.  You Lose!!!";
 var typeItUWin     = " Game Over.  You Win!!!";
-var typeItDup      = "The letter entered has already been selected.  Try again.   ==> ";
-//var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
+var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> "; //func
 
-var xLetterSave    = "";
+var xLetter        = "";               // same as x.letter
 
 var wordToGuess    = [];               // the is the word to guess
 var wordToDisplay  = [];               // display the word with the letters as guessed
@@ -79,8 +80,6 @@ initArray(wordToDisplay, wordToGuess.length);            // display the word wit
 //console.log("wordToDisplay=" + wordToDisplay);
 
 displayHdr();
-//console.log("                             You entered: " + "\n"); 
-//console.log("                          Guess the word: "       ); 
 
 typeIt = typeItMsg;
 promptIt();							   // 1st prompt for a letter guess and process
@@ -97,94 +96,95 @@ inquirer.prompt([{
     message: typeIt
     // message: "Type it here ==> "
 }]).then(function(x) {
+    xLetter       =  x.letter;         // needed to pass to wtdf - display rtn
 
-    //console.log("  You have selected letter ==> " + x.letter +  " " + (x.letter.toLowerCase().charCodeAt() - 97) + "\n");
-    //console.log("                             You entered: " + x.letter + "");        
 
-    //lettersUsed[(x.letter.toLowerCase().charCodeAt() - 96)] = x.letter;
-    //console.log("lettersUsed2=" ); 
-    xLetterSave = x.letter;
-    if(x.letter == '9' || x.letter == 'exit' || x.letter == 'quit' ) 
+    //   letters or numbers which will cause the pgm to end, win, lose, for test
+    //   start
+    if(xLetter == '9' || xLetter == 'exit' || xLetter == 'quit' ) 
         return;                        // allow the player to end the game
 
-    if(x.letter == '20') {             // For Test purposes
+    if(xLetter == '20') {             // For Test purposes
        turnCtr = 2;                    // speed up the game to 2 tries left
     }
 
-    if(x.letter == '100') {             // For Test purposes
+    if(xLetter == '100') {             // For Test purposes
        //turnCtr = 0;                   // speed up the game - force a win
        randWordLen = 0; 
        displayHdr(); 
        dispWinMsg();
     }
 
-    if(x.letter == '00') {             // For Test purposes
+    if(xLetter == '99') {             // For Test purposes
+       turnCtr = 14;                    // reset ctr to 14 tries
+    }
+
+    if(xLetter == '00') {             // For Test purposes
        turnCtr = 0;                    // speed up the game - force a loss
     }
     
-    if(x.letter == 'hint')  {
+    if(xLetter == 'hint')  {
        hintWord = (" - " + randWordSave.join(""));  // display the word to guess
     } 
 
-    if(x.letter == 'unhint' || x.letter == 'un') { // undisplay the word to guess
+    if(xLetter == 'unhint' || xLetter == 'un') { // undisplay the word to guess
        hintWord = " ";
     } 
 
-    //turnCtr--;
+    //   letters or numbers which will cause the pgm to end, win, lose, for test
+    //   end
+
+
 
 
     // process the letter guess
-    if (lettersUsed[(x.letter.toLowerCase().charCodeAt() - 97)] != x.letter){
+    if (lettersUsed[(xLetter.toLowerCase().charCodeAt() - 97)] != xLetter){
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - 
         // Protect program from invalid characters - start
         // save letter only if length 1 and from a-z
-        if(x.letter.length == 1 && (x.letter.toLowerCase().charCodeAt() >=97) 
-                                && (x.letter.toLowerCase().charCodeAt() <= 127)){
-          lettersUsed[(x.letter.toLowerCase().charCodeAt() - 97)] = x.letter; 
+        if(xLetter.length == 1 && (xLetter.toLowerCase().charCodeAt() >=97) 
+                                && (xLetter.toLowerCase().charCodeAt() <= 127)){
+          lettersUsed[(xLetter.toLowerCase().charCodeAt() - 97)] = xLetter; 
           turnCtr--;
         } else {
             // this will display only when clear screen option is off
-            console.log("letter code = " + x.letter.toLowerCase().charCodeAt());
+            console.log("letter code = " + xLetter.toLowerCase().charCodeAt());
 
             //
-            if(x.letter.toLowerCase().charCodeAt() == 63){ // if player enters ?
-                x.letter = "hint";  // set var to display quess word
+            if(xLetter.toLowerCase().charCodeAt() == 63){ // if player enters ?
+                xLetter = "hint";  // set var to display quess word
             } else {
-                x.letter = " ";     // force valid character
+                xLetter = " ";     // force valid character
             }
 
         } // Protect program from invalid characters - end
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
-        // --------------------------------------
-        console.log("a");
-    //wordToDisplayFunc();
-    var wtdf = new WordToDisplay(randomWord, randWordLen, xLetterSave, wordToGuess, wordToDisplay, typeIt);
-    //randomWord, randWordLen, xLetterSave, wordToGuess, wordToDisplay, typeIt
+    // --------------------------------------  word display processing
       
-      randomWord = wtdf.randomWord;
-            console.log("wtdf.randomWord=" + wtdf.randomWord);
-      randWordLen = wtdf.randWordLen;
-      xLetterSave  = wtdf.xLetterSave;
-      wordToGuess = wtdf.wordToGuess;
-      wordToDisplay = wtdf.wordToDisplay;
-      typeIt = wtdf.typeIt;
+    //wordToDisplayFunc();             // Function
 
-         console.log("b");
+
+    var wtdf      = new WordToDisplay(randomWord, randWordLen, xLetter, wordToGuess, wordToDisplay, typeIt);
+
+    // fields returned to main.js from letter.js - make them accessible to program  
+    randomWord    = wtdf.randomWord;
+    //console.log("wtdf.randomWord=" + wtdf.randomWord);
+    randWordLen   = wtdf.randWordLen;
+    xLetter       = wtdf.xLetter;
+    wordToGuess   = wtdf.wordToGuess;
+    wordToDisplay = wtdf.wordToDisplay;
+    typeIt        = wtdf.typeIt;
         
-      // --------------------------------------
-            
-          letterEntered = x.letter;
-          //typeIt = typeItMsg;
-          displayHdr();
-          //console.log("letter code = " + x.letter.toLowerCase().charCodeAt());
+    // --------------------------------------
+          
 
-          // check if you win, if so, display msg, and end game
-          //if(randWordLen == 0 && turnCtr >= 0){
-            dispWinMsg(); 
-          //  return;
+          letterEntered = xLetter;
+          displayHdr();
+          dispWinMsg(); 
+
 
           //}
 
@@ -193,17 +193,16 @@ inquirer.prompt([{
           turnCtr--;                   // decrement turn counter for selecting dup char
           displayHdr();
 
-          //console.log("  The letter " +  x.letter.toLowerCase() + "has already been selected.  Try again. ")
+          //console.log("  The letter " +  xLetter.toLowerCase() + "has already been selected.  Try again. ")
     }
 
-        // check if you ran out of turns, if so, display you lose msg
-        //if(turnCtr <= 0){
-            dispLossMsg();
+         // check if you ran out of turns, if so, display you lose msg
+         //if(turnCtr <= 0){
+         dispLossMsg();  // function will ck if you are out of turns and exit
          //   return;
-        //}
+         //}
 
-        //console.log("randWordSave=" + randWordSave);
-
+        
     promptIt();                        // recursion, prompt for next letter                           
 }) 
 
@@ -313,7 +312,7 @@ function displayHdr( ) {
 
 // -----------------------------------------------------------------------
 
-function randWordFunc() {
+function randWordFunc() {      // not used, replaced with call to game.js
 
 // a list of words, which will be selected at random, for the player of the game to guess
 	var listOfWords = [ 'zeroth', 'first','second','third', 'fourth', 'fifth', 
@@ -357,33 +356,33 @@ function randWordFunc() {
 
     // -----------------------------------------------------------------------
 
-    function wordToDisplayFunc() {
+    function wordToDisplayFunc() {   //  replaced with letter.js processing
         // process/update the mystery word display on the screen 
         //    _ e _ _ h   ie for the word "tenth"
 
-        console.log("a - randomWord=" + randomWord);
- //var i = randomWord.search(x.letter);
- var i = randomWord.search(xLetterSave);
+        //console.log("a - randomWord=" + randomWord);
+        //var i = randomWord.search(xLetter);
+        var i = randomWord.search(xLetter);
  
 
- console.log("a2 - i=" + i);
-                 //console.log(" i=" + i);
-                 if(i == -1){
-                    // letter not found in word, update prompt msg
-                    typeIt = typeItNotFnd;
-                 } else {
-                    // letter was found in word, use std prompt msg
-                    typeIt = typeItMsg;
-                 }
+        //console.log("a2 - i=" + i);
 
-console.log("b");
-                    while (i != -1) {   // if i=-1, then letter is not found in string
-           //guessTheWord[i] = x.letter;
+        if(i == -1){
+        // letter not found in word, update prompt msg
+            typeIt = typeItNotFnd;
+        } else {
+        // letter was found in word, use std prompt msg
+        typeIt = typeItMsg;
+        }
+
+        //console.log("b");
+        while (i != -1) {   // if i=-1, then letter is not found in string
+           //guessTheWord[i] = xLetter;
            //wordToGuessLen--;
 
             wordToGuess[i] = "_";
-            //wordToDisplay[i] = x.letter;
-            wordToDisplay[i] = xLetterSave;
+            //wordToDisplay[i] = xLetter;
+            wordToDisplay[i] = xLetter;
 
             randWordLen--;              // decrement for each letter found. 
                                         // when length is zero, word has been guessed
@@ -391,9 +390,9 @@ console.log("b");
             randomWord = wordToGuess.join("");
             //wordToGuess = [...str];
 
-            //i = randomWord.search(x.letter);
-            i = randomWord.search(xLetterSave);
-            };
+            //i = randomWord.search(xLetter);
+            i = randomWord.search(xLetter);
+          };
 
-     console.log("z");   
+    //console.log("z");   
     }
