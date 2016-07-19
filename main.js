@@ -27,6 +27,7 @@
 var inquirer = require('inquirer');
 
 var RandWordGen = require('./game.js');
+var WordToDisplay = require('./letter.js');
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -38,7 +39,7 @@ var letterEntered  = "";
 var lettersUsed    = [];			   // placeholder for letters used, stored in  a-z order
 
 var xyz    = new RandWordGen();   // generate a random word to guess
-var randomWord = xyz.randomWord;
+var randomWord = xyz.randWord;
 
 console.log("main.js - randomWord=" + JSON.stringify(randomWord));
 //var randomWord     = randWordFunc();   // generate a random word to guess
@@ -57,7 +58,9 @@ var typeItMsg      = "Type it here ==> ";
 var typeItULose    = " Game Over.  You Lose!!!";
 var typeItUWin     = " Game Over.  You Win!!!";
 var typeItDup      = "The letter entered has already been selected.  Try again.   ==> ";
-var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
+//var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
+
+var xLetterSave    = "";
 
 var wordToGuess    = [];               // the is the word to guess
 var wordToDisplay  = [];               // display the word with the letters as guessed
@@ -100,6 +103,7 @@ inquirer.prompt([{
 
     //lettersUsed[(x.letter.toLowerCase().charCodeAt() - 96)] = x.letter;
     //console.log("lettersUsed2=" ); 
+    xLetterSave = x.letter;
     if(x.letter == '9' || x.letter == 'exit' || x.letter == 'quit' ) 
         return;                        // allow the player to end the game
 
@@ -154,36 +158,23 @@ inquirer.prompt([{
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 
-          // --------------------------------------
-                 var i = randomWord.search(x.letter);
-                 //console.log(" i=" + i);
-                 if(i == -1){
-                    // letter not found in word, update prompt msg
-                    typeIt = typeItNotFnd;
-                 } else {
-                    // letter was found in word, use std prompt msg
-                    typeIt = typeItMsg;
-                 }
+        // --------------------------------------
+        console.log("a");
+    //wordToDisplayFunc();
+    var wtdf = new WordToDisplay(randomWord, randWordLen, xLetterSave, wordToGuess, wordToDisplay, typeIt);
+    //randomWord, randWordLen, xLetterSave, wordToGuess, wordToDisplay, typeIt
+      
+      randomWord = wtdf.randomWord;
+            console.log("wtdf.randomWord=" + wtdf.randomWord);
+      randWordLen = wtdf.randWordLen;
+      xLetterSave  = wtdf.xLetterSave;
+      wordToGuess = wtdf.wordToGuess;
+      wordToDisplay = wtdf.wordToDisplay;
+      typeIt = wtdf.typeIt;
 
-
-                    while (i != -1) {   // if i=-1, then letter is not found in string
-           //guessTheWord[i] = x.letter;
-           //wordToGuessLen--;
-
-            wordToGuess[i] = "_";
-            wordToDisplay[i] = x.letter;
-
-            randWordLen--;              // decrement for each letter found. 
-                                        // when length is zero, word has been guessed
-
-            randomWord = wordToGuess.join("");
-            //wordToGuess = [...str];
-
-            i = randomWord.search(x.letter);
-            };
-
+         console.log("b");
         
-                // --------------------------------------
+      // --------------------------------------
             
           letterEntered = x.letter;
           //typeIt = typeItMsg;
@@ -362,4 +353,48 @@ function randWordFunc() {
 
     function throwExit() {
         throw exit;     // end the pgm NOW. 
+    }
+
+
+    // -----------------------------------------------------------------------
+
+    function wordToDisplayFunc() {
+        // process/update the mystery word display on the screen 
+        //    _ e _ _ h   ie for the word "tenth"
+
+        console.log("a - randomWord=" + randomWord);
+ //var i = randomWord.search(x.letter);
+ var i = randomWord.search(xLetterSave);
+ 
+
+ console.log("a2 - i=" + i);
+                 //console.log(" i=" + i);
+                 if(i == -1){
+                    // letter not found in word, update prompt msg
+                    typeIt = typeItNotFnd;
+                 } else {
+                    // letter was found in word, use std prompt msg
+                    typeIt = typeItMsg;
+                 }
+
+console.log("b");
+                    while (i != -1) {   // if i=-1, then letter is not found in string
+           //guessTheWord[i] = x.letter;
+           //wordToGuessLen--;
+
+            wordToGuess[i] = "_";
+            //wordToDisplay[i] = x.letter;
+            wordToDisplay[i] = xLetterSave;
+
+            randWordLen--;              // decrement for each letter found. 
+                                        // when length is zero, word has been guessed
+
+            randomWord = wordToGuess.join("");
+            //wordToGuess = [...str];
+
+            //i = randomWord.search(x.letter);
+            i = randomWord.search(xLetterSave);
+            };
+
+     console.log("z");   
     }

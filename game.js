@@ -10,14 +10,14 @@ var RandWordGen = function(){
 
 	this.randNum = -1;					// a random number generated used for random selection from
 										//    the listOfWords array
-	this.randomWord = "abc";		
+	this.randWord = "abc";		
 
 	this.randNum = Math.floor(Math.random() * (this.listOfWords.length + 1));
-	this.randomWord = this.listOfWords[this.randNum];
+	this.randWord = this.listOfWords[this.randNum];
 	//randomWord = listOfWords[1];			// test purposes - test a specific word
 
 	//console.log("game.js -  randomWord generated = " + this.randomWord);
-	return this.randomWord;
+	return this.randWord;
 }
 
 module.exports = RandWordGen;
