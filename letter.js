@@ -9,49 +9,40 @@ this.wordToGuess = wordToGuess;
 this.wordToDisplay = wordToDisplay;
 this.typeIt = typeIt;
 
-console.log("wtd - randomWord=" + this.randomWord);
-console.log("wtd - randWordLen=" + this.randWordLen);
+
+//console.log("wtd - randomWord=" + this.randomWord);
+//console.log("wtd - randWordLen=" + this.randWordLen);
+// etc... display the input parms as necessary
 
 
 var typeItMsg      = "Type it here ==> ";
 var typeItNotFnd   = "The letter entered was not in the word.  Try again.   ==> ";
 
- //var i = randomWord.search(x.letter);
- var i = this.randomWord.search(this.xLetterSave);
+// search to see if your input letter is contained in the mystery word
+var i = this.randomWord.search(this.xLetterSave);  // i will = -1 if not found
  
-  console.log(" i=" + i);
-                 if(i == -1){
-                    // letter not found in word, update prompt msg
-                    this.typeIt = typeItNotFnd;
-                 } else {
-                    // letter was found in word, use std prompt msg
-                    this.typeIt = typeItMsg;
-                 }
+  // display in the input letter prompt area - letter found or not found
+  if(i == -1){
+      this.typeIt = typeItNotFnd;   // letter not found in word, update prompt msg
+  } else {
+      this.typeIt = typeItMsg;			// letter was found in word, use std prompt msg
+  }
 
-console.log("c");
-                    while (i != -1) {   // if i=-1, then letter is not found in string
-           //guessTheWord[i] = x.letter;
-           //wordToGuessLen--;
-console.log("d");
-            this.wordToGuess[i] = "_";
-            //wordToDisplay[i] = x.letter;
-            this.wordToDisplay[i] = this.xLetterSave;
+  while (i != -1) {                 // if i=-1, then letter is not found in string
+  	this.wordToGuess[i]   = "_";    // blank out the letter
+    this.wordToDisplay[i] = this.xLetterSave;  // update the screen display of letter found
+    this.randWordLen--;             // decrement for each letter found. 
+                                    //    when length is zero, word has been guessed
+    this.randomWord = this.wordToGuess.join("");
 
-            this.randWordLen--;         // decrement for each letter found. 
-                                        // when length is zero, word has been guessed
+    i = this.randomWord.search(this.xLetterSave);  // search again & go to top of loop
+  };
 
-            this.randomWord = this.wordToGuess.join("");
-            //wordToGuess = [...str];
-
-            //i = randomWord.search(x.letter);
-            i = this.randomWord.search(this.xLetterSave);
-            };
-
-     console.log("this.randWordLen a=" + this.randWordLen);  
-     console.log("this.typeIt=" + this.typeIt);
-     return this.randomWord, this.randWordLen, this.xLetterSave, this.wordToGuess, this.wordToDisplay, this.typeIt;
-    }
-
- 
+  //console.log("letter.js - this.randWordLen a=" + this.randWordLen);  
+  //console.log("letter.js - this.typeIt=" + this.typeIt);
+  //
+  // return the input fields updated back to the caller
+  return this.randomWord, this.randWordLen, this.xLetterSave, this.wordToGuess, this.wordToDisplay, this.typeIt;
+}
 
 module.exports = WordToDisplay;

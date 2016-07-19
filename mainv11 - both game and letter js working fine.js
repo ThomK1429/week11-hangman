@@ -269,6 +269,7 @@ function displayHdr( ) {
     console.log("\n"); 
     console.log("Hangman - main.js" + hintWord);
 
+
     console.log("\n"); 
     console.log("          *********************************************************");
     console.log("          *                                                       *");

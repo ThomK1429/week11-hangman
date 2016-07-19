@@ -9,7 +9,7 @@ var RandWordGen = function(){
 						'eleventh', 'twelfth','thirteenth','fourteenth', 'fifteenth', 'baaaark'];
 
 	this.randNum = -1;					// a random number generated used for random selection from
-										//    the listOfWords array
+									          	//    the listOfWords array
 	this.randWord = "abc";		
 
 	this.randNum = Math.floor(Math.random() * (this.listOfWords.length + 1));
