@@ -33,6 +33,7 @@ var WordToDisplay = require('./letter.js');      // update word display as guess
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Define variables and populate where necessary
+var clrScreen      = true;       // clear the screen on with each iteration
 var hintWord       = "";         // placeholder to display mystery word if set
 
 var letterEntered  = "";
@@ -123,6 +124,14 @@ inquirer.prompt([{
        turnCtr = 0;                    // speed up the game - force a loss
     }
     
+    if(xLetter == 'clson' || xLetter == 'clron')  {
+       clrScreen  = true;
+    } 
+
+    if(xLetter == 'clsoff' || xLetter == 'clroff')  {
+       clrScreen  = false;
+    } 
+
     if(xLetter == 'hint')  {
        hintWord = (" - " + randWordSave.join(""));  // display the word to guess
     } 
@@ -215,7 +224,10 @@ inquirer.prompt([{
 
     function clearTheScreen() { 
        // give the appearance of screen driven app rather than cmd line app
-       process.stdout.write('\033c'); // clear the screen 
+       if (clrScreen) {
+          process.stdout.write('\033c'); // clear the screen 
+        }
+
     }
     
 // -----------------------------------------------------------------
